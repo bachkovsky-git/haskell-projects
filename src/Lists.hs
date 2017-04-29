@@ -1,5 +1,8 @@
+{-# LANGUAGE NoMonomorphismRestriction #-}
 module Lists where
 import Data.Char
+import Data.List
+
 
 addTwoElements x1 x2 xs = x1 : x2 : xs
 
@@ -18,7 +21,7 @@ oddsOnly = filter odd
 isPalindrome :: Eq a => [a] -> Bool
 isPalindrome []  = True
 isPalindrome [_] = True
-isPalindrome (fst : xs)  = (fst == last xs) && (isPalindrome $ init xs)
+isPalindrome (from : xs)  = (from == last xs) && (isPalindrome $ init xs)
 
 sum3 :: Num a => [a] -> [a] -> [a] -> [a]
 sum3 as bs cs = zipWith3 (\x y z -> x + y + z) (norm as) (norm bs) (norm cs)
@@ -43,3 +46,56 @@ qsort (x:xs) = qsort ltx ++ eqx ++ qsort gtx
     ltx =  filter (<x) xs
     gtx = filter (>x) xs
     eqx = x : filter (==x) xs
+
+squares'n'cubes :: Num a => [a] -> [a]
+squares'n'cubes = concatMap (\x -> [x^2, x^3])
+
+perms :: [a] -> [[a]]
+perms [] = [[]]
+perms xs = [x:ps | (hs, x:ts) <- (inits xs `zip` tails xs), ps <- perms (hs ++ ts)]
+    where tails xs = map (\i -> drop i xs) [0..length xs]
+          inits xs = map (\i -> take i xs) [0..length xs]
+
+delAllUpper :: String -> String
+delAllUpper = unwords . filter (any isUpper) . words
+
+max3 :: Ord a => [a] -> [a] -> [a] -> [a]
+max3 = zipWith3 (\x y z -> maximum [x, y, z])
+
+----- List generators ----------------------
+ones :: [Integer]
+ones = 1 : ones
+
+nats :: Integer -> [Integer]
+nats n = n : nats (n + 1)
+
+repeat1 = iterate repeatHelper
+repeatHelper = id
+
+filter' f xs = [x | x <- xs, f x]
+
+----- List folding -----------
+concatList :: [[a]] -> [a]
+concatList = foldr (++) []
+
+lengthList :: [a] -> Int
+lengthList = foldr (\_ l -> l + 1) 0
+
+sumOdd :: [Integer] -> Integer
+sumOdd = foldr sumIfOdd 0 where
+    sumIfOdd x s | odd x     = x + s
+                 | otherwise = s
+
+meanList :: [Double] -> Double
+meanList = (\ (s, l) -> s / l) . foldr (\ x (s, l) -> (x + s, l + 1)) (0, 0)
+
+evenOnly :: [a] -> [a]
+evenOnly = map snd . filter (even . fst) . zip [1..]
+
+lastElem :: [a] -> a
+lastElem = foldl1 (flip $ const)
+
+revRange :: (Char,Char) -> [Char]
+revRange = unfoldr g
+  where g (fr, to) | to >= fr = Just (to, (fr, pred to))
+                   | otherwise = Nothing
