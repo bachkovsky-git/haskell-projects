@@ -87,7 +87,8 @@ sumOdd = foldr sumIfOdd 0 where
                  | otherwise = s
 
 meanList :: [Double] -> Double
-meanList = (\ (s, l) -> s / l) . foldr (\ x (s, l) -> (x + s, l + 1)) (0, 0)
+meanList xs = sum / count where
+    (sum, count) = foldr (\ x (s, l) -> (x + s, l + 1)) (0, 0) xs
 
 evenOnly :: [a] -> [a]
 evenOnly = map snd . filter (even . fst) . zip [1..]

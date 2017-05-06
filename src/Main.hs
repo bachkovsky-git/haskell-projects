@@ -27,7 +27,7 @@ integration :: (Double -> Double) -> Double -> Double -> Double
 integration f a b = delta * ((f a + f b) / 2 + (sum $ map f $ map seg $ [2..n - 1]))
     where
         n = 5000
-        delta = (b - a)/ n
+        delta = (b - a) / n
         seg i = a + i * delta
 
 getSecondFrom :: a -> b -> c -> b
