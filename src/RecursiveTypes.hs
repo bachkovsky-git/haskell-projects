@@ -49,3 +49,26 @@ avg t =
     go (Node left right) = (lc + rc, ls + rs) where
         (lc, ls) = go left
         (rc, rs) = go right
+
+infixl 6 :+:
+infixl 7 :*:
+data Expr = Val Int | Expr :+: Expr | Expr :*: Expr
+    deriving (Show, Eq)
+
+expand :: Expr -> Expr
+expand ((e1 :+: e2) :*: e) = expand (e1 :*: e)  :+: expand (e2 :*: e)
+expand (e :*: (e1 :+: e2)) = expand (e  :*: e1) :+: expand (e  :*: e2)
+
+expand (e1 :+: e2) = expand e1 :+: expand e2
+
+expand e@((Val _) :*: (Val _)) = e
+expand origin@(e1 :*: e2) | origin == expanded = origin
+                          | otherwise          = expand expanded
+     where expanded = expand e1 :*: expand e2
+
+expand e = e
+
+{-
+expand $ (Val 1 :+: Val 2 :+: Val 3) :*: (Val 4 :+: Val 5)
+((Val 1 :*: Val 4 :+: Val 1 :*: Val 5) :+: (Val 2 :*: Val 4 :+: Val 2 :*: Val 5)) :+: (Val 3 :*: Val 4 :+: Val 3 :*: Val 5)
+-}
