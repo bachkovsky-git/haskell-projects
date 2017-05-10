@@ -23,7 +23,3 @@ ignore' (IList' _) = "Hello"
 -}
 
 newtype A = A A
-
-
-
-

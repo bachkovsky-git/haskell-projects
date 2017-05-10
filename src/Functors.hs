@@ -14,6 +14,7 @@ instance Functor GeomPrimitive where
 data Tree' a = Leaf' a | Branch' (Tree' a) a (Tree' a)
     deriving Show
 
+testTree :: Tree' Integer
 testTree = Branch' (Leaf' 2) 3 (Leaf' 4)
 
 instance Functor Tree' where
@@ -29,8 +30,10 @@ instance Functor Tree where
 --instance Functor ((,) s) where
 --    fmap g (x, y) = (x, g y)
 
-data Entry k1 k2 v = Entry (k1, k2) v  deriving Show
-data Map k1 k2 v = Map [Entry k1 k2 v]  deriving Show
+data Entry k1 k2 v = Entry (k1, k2) v
+                      deriving Show
+newtype Map k1 k2 v = Map [Entry k1 k2 v]
+                      deriving Show
 
 instance Functor (Entry k1 k2) where
     fmap g (Entry keys v) = Entry keys (g v)

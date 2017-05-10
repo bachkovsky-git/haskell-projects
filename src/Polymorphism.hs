@@ -24,11 +24,11 @@ class KnownToMork a where
 
 class (KnownToGork a, KnownToMork a) => KnownToGorkAndMork a where
     stompOrStab :: a -> a
-    stompOrStab a =
-        if (doesEnrageMork a && doesEnrageGork a) then stomp $ stab a
-        else if (doesEnrageMork a) then stomp a
-        else if (doesEnrageGork a) then stab a
-        else a
+    stompOrStab a
+      | doesEnrageMork a && doesEnrageGork a = stomp $ stab a
+      | doesEnrageMork a = stomp a
+      | doesEnrageGork a = stab a
+      | otherwise = a
 
 -- cyclyc bounded enum
 class (Eq a, Bounded a, Enum a) => SafeEnum a where

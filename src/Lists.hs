@@ -3,31 +3,36 @@ module Lists where
 import Data.Char
 import Data.List
 
-
+addTwoElements :: a -> a -> [a] -> [a]
 addTwoElements x1 x2 xs = x1 : x2 : xs
 
-nTimes x 0 = []
+nTimes :: (Num t, Eq t) => t1 -> t -> [t1]
+nTimes _ 0 = []
 nTimes x n = x : nTimes x (n - 1)
 
+head' :: [t] -> t
 head' (x : _) = x
+tail' :: [t] -> [t]
 tail' (_ : xs) = xs
 
+second :: [t] -> t
 second (_ : x : _) = x
+second1 :: [a] -> a
 second1 (_ : xs) = head xs
 
-
+oddsOnly :: Integral a => [a] -> [a]
 oddsOnly = filter odd
 
 isPalindrome :: Eq a => [a] -> Bool
 isPalindrome []  = True
 isPalindrome [_] = True
-isPalindrome (from : xs)  = (from == last xs) && (isPalindrome $ init xs)
+isPalindrome (from : xs)  = (from == last xs) && isPalindrome (init xs)
 
 sum3 :: Num a => [a] -> [a] -> [a] -> [a]
 sum3 as bs cs = zipWith3 (\x y z -> x + y + z) (norm as) (norm bs) (norm cs)
     where
     maxLength = maximum [length as, length bs, length cs]
-    norm xs = xs ++ (replicate (maxLength - length xs) 0)
+    norm xs = xs ++ replicate (maxLength - length xs) 0
 
 groupElems :: Eq a => [a] -> [[a]]
 groupElems [] = []
@@ -69,9 +74,12 @@ ones = 1 : ones
 nats :: Integer -> [Integer]
 nats n = n : nats (n + 1)
 
+repeat1 :: a -> [a]
 repeat1 = iterate repeatHelper
+repeatHelper :: a -> a
 repeatHelper = id
 
+filter' :: (t -> Bool) -> [t] -> [t]
 filter' f xs = [x | x <- xs, f x]
 
 ----- List folding -----------
@@ -87,16 +95,16 @@ sumOdd = foldr sumIfOdd 0 where
                  | otherwise = s
 
 meanList :: [Double] -> Double
-meanList xs = sum / count where
-    (sum, count) = foldr (\ x (s, l) -> (x + s, l + 1)) (0, 0) xs
+meanList xs = sum' / count where
+    (sum', count) = foldr (\ x (s, l) -> (x + s, l + 1)) (0, 0) xs
 
 evenOnly :: [a] -> [a]
 evenOnly = map snd . filter (even . fst) . zip [1..]
 
 lastElem :: [a] -> a
-lastElem = foldl1 (flip $ const)
+lastElem = foldl1 (flip const)
 
-revRange :: (Char,Char) -> [Char]
+revRange :: (Char,Char) -> String
 revRange = unfoldr g
   where g (fr, to) | to >= fr = Just (to, (fr, pred to))
                    | otherwise = Nothing

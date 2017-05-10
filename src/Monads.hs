@@ -1,7 +1,7 @@
 module Monads where
 import Control.Monad
 
-data Log a = Log [String] a deriving Show
+data Log a = Log [String] a deriving (Show, Eq)
 
 toLogger :: (a -> b) -> String -> (a -> Log b)
 toLogger f s a = Log [s] (f a)
@@ -29,7 +29,7 @@ toKleisli f x = return (f x)
 --toKleisli f = \x -> return (f x)
 
 returnLog :: a -> Log a
-returnLog a = Log [] a
+returnLog = Log []
 
 bindLog :: Log a -> (a -> Log b) -> Log b
 bindLog (Log m1 x) f = Log (m1 ++ m2) x' where
@@ -60,8 +60,16 @@ instance Applicative Identity where
   Identity f <*> Identity v = Identity (f v)
 
 instance Monad Identity where
-    return x = Identity x
+    return = Identity
     Identity x >>= k = k x
 
 wrap'n'succ :: Integer -> Identity Integer
 wrap'n'succ x = Identity (succ x)
+
+{- первый закон
+    return a >>= k === k a
+   второй закон
+    m >>= return === m
+   третий закон
+   m >>= k >>= k' === m >>= (\x -> k x >>= k')
+-}

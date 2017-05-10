@@ -1,14 +1,15 @@
 module Main where
-import Data.Char
+import           Data.Char
 
+main :: a
 main = undefined
 
 fibonacci :: Int -> Integer
 fibonacci n | n < 0       = (if n `mod` 2 == 0 then (-1) else 1) * fibonacci (-n)
             | otherwise  = fibs!!n
 
+fibs :: [Integer]
 fibs = 0 : 1 : zipWith (+) fibs (tail fibs)
-
 
 seqA :: Int -> Integer
 seqA n = generate [1, 2, 3] n !! n
@@ -24,24 +25,17 @@ sum'n'count :: Integer -> (Int, Int)
 sum'n'count x = (sum l, length l) where l = map digitToInt $ filter isDigit $ show x
 
 integration :: (Double -> Double) -> Double -> Double -> Double
-integration f a b = delta * ((f a + f b) / 2 + (sum $ map f $ map seg $ [2..n - 1]))
+integration f a b = delta * (f a + f b) / 2 + sum (map (f . seg) [2 .. n - 1])
     where
         n = 5000
         delta = (b - a) / n
         seg i = a + i * delta
 
 getSecondFrom :: a -> b -> c -> b
-getSecondFrom x y z = y
+getSecondFrom _ y _ = y
 
 on3 :: (b -> b -> b -> c) -> (a -> b) -> a -> a -> a -> c
 on3 op f x y z = op (f x) (f y) (f z)
-
-doItYourself :: Double -> Double
-doItYourself = f . g . h
-
-f = (logBase 2)
-g = ( ^ 3)
-h = (max 42)
 
 swap =  uncurry (flip (,))
 -- swap (1, "AS")

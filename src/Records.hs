@@ -1,6 +1,5 @@
 module Records where
 import Data.Char(isDigit)
-import Data.List(isInfixOf)
 
 --import Data.Time.Clock
 --import Data.Time.Format
@@ -19,12 +18,14 @@ logLevelToString Warning = "Warning"
 logLevelToString Info = "Info"
 
 logEntryToString :: LogEntry -> String
-logEntryToString entry = (timestamp $ entry)  ++ ": " ++ (logLevelToString $ logLevel $ entry) ++ ": " ++ (message $ entry)
+logEntryToString entry = timestamp entry ++
+    ": " ++ logLevelToString (logLevel entry) ++ ": " ++ message entry
+
 
 data Coord a = Coord a a deriving (Show)
 
 distance :: Coord Double -> Coord Double -> Double
-distance (Coord x y) (Coord x' y') = sqrt $ ((x - x')^2 + (y - y')^2)
+distance (Coord x y) (Coord x' y') = sqrt ((x - x') ^ 2 + (y - y') ^ 2)
 
 manhDistance :: Coord Int -> Coord Int -> Int
 manhDistance (Coord x y) (Coord x' y') = abs (x - x') + abs (y - y')
@@ -47,15 +48,15 @@ roots a b c
         discr = b ^ 2 - 4 * a * c
 
 
-findDigit :: [Char] -> Maybe Char
+findDigit :: String -> Maybe Char
 findDigit [] = Nothing
 findDigit (x:xs) | isDigit x = Just x
                  | otherwise = findDigit xs
 
-findDigitOrX :: [Char] -> Char
+findDigitOrX :: String -> Char
 findDigitOrX str = case findDigit str of
-                        Just d  -> d
-                        Nothing -> 'X'
+      Just d -> d
+      Nothing -> 'X'
 
 listToMaybe :: [a] -> Maybe a
 listToMaybe []    = Nothing

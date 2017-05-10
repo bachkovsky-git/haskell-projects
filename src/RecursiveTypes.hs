@@ -61,7 +61,7 @@ expand (e :*: (e1 :+: e2)) = expand (e  :*: e1) :+: expand (e  :*: e2)
 
 expand (e1 :+: e2) = expand e1 :+: expand e2
 
-expand e@((Val _) :*: (Val _)) = e
+expand e@(Val _ :*: Val _) = e
 expand origin@(e1 :*: e2) | origin == expanded = origin
                           | otherwise          = expand expanded
      where expanded = expand e1 :*: expand e2

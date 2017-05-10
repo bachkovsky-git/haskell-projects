@@ -48,7 +48,7 @@ distanceToOrigin :: Point -> Double
 distanceToOrigin (Point x y) = sqrt (x ^ 2 + y ^ 2)
 
 distance :: Point -> Point -> Double
-distance (Point x y) (Point x' y') = sqrt ((abs (x' - x))^2 + (abs (y' - y))^2)
+distance (Point x y) (Point x' y') = sqrt (abs (x' - x) ^ 2 + abs (y' - y) ^ 2)
 
 data Roots = Roots Double Double | None -- тип сумма произведений
     deriving Show
@@ -89,33 +89,8 @@ foo False = 0
 data Person = Person {firstName :: String, lastName :: String, age :: Int } deriving (Show, Eq)
 
 abbrFirstName :: Person -> Person
-abbrFirstName p@(Person {firstName = f:s:ts}) = p {firstName = f : "." }
+abbrFirstName p@Person {firstName = f:_:_} = p {firstName = f : "." }
 abbrFirstName p = p
 
 
 data Coord a = Coord a a
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

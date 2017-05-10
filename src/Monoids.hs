@@ -3,7 +3,6 @@ module Monoids where
 
 import Prelude hiding (lookup)
 import qualified Data.List as L
-import Data.Function
 
 class Monoid' a where
     mempty' :: a             -- нейтральный элемент
@@ -76,6 +75,7 @@ instance Monoid a => Monoid (Maybe' a) where
     Maybe' l `mappend` Maybe' r = Maybe' $ l `mappend` r
 
 
+test0 :: String
 test0 = if (mempty :: Maybe' [Int]) == Maybe' Nothing then "failed" else "passed"
 
 newtype ListMap k v = ListMap { getListMap :: [(k,v)] }
@@ -84,8 +84,8 @@ newtype ListMap k v = ListMap { getListMap :: [(k,v)] }
 instance MapLike ListMap where
     empty = ListMap []
     lookup k (ListMap m) = L.lookup k m
-    insert key val map = ListMap $ (key, val) : (getListMap $ delete key map)
-    delete key (ListMap map) = ListMap $ filter (\ (k,_) -> k /= key) map
+    insert key val m = ListMap $ (key, val) : getListMap (delete key m)
+    delete key (ListMap m) = ListMap $ filter (\ (k,_) -> k /= key) m
 
 class MapLike m where
     empty :: m k v
@@ -99,7 +99,7 @@ class MapLike m where
 newtype ArrowMap k v = ArrowMap { getArrowMap :: k -> Maybe v }
 
 instance MapLike ArrowMap where
-    empty                       = ArrowMap $ \_ -> Nothing
+    empty                       = ArrowMap $ const Nothing
     lookup x (ArrowMap f)       = f x
     insert key val (ArrowMap f) = ArrowMap $ \x -> if x == key then Just val else f x
     delete key (ArrowMap f)     = ArrowMap $ \x -> if x == key then Nothing else f x
