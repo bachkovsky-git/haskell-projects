@@ -55,8 +55,8 @@ findDigit (x:xs) | isDigit x = Just x
 
 findDigitOrX :: String -> Char
 findDigitOrX str = case findDigit str of
-      Just d -> d
-      Nothing -> 'X'
+                        Just d  -> d
+                        Nothing -> 'X'
 
 listToMaybe :: [a] -> Maybe a
 listToMaybe []    = Nothing

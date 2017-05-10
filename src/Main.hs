@@ -37,9 +37,11 @@ getSecondFrom _ y _ = y
 on3 :: (b -> b -> b -> c) -> (a -> b) -> a -> a -> a -> c
 on3 op f x y z = op (f x) (f y) (f z)
 
+swap :: (b, a) -> (a, b)
 swap =  uncurry (flip (,))
 -- swap (1, "AS")
 
+ip :: [Char]
 ip = show a ++ show b ++ show c ++ show d
 a = 12
 b = 7.22
