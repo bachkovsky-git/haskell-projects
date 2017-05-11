@@ -102,3 +102,28 @@ asToken s
 
 tokenize :: String -> Maybe [Token]
 tokenize = mapM asToken . words
+
+data Board
+  = A
+  | B
+  deriving (Show, Eq)
+
+nextPositions :: Board -> [Board]
+nextPositions b = [b, b, A, B]
+
+nextPositionsN :: Board -> Int -> (Board -> Bool) -> [Board]
+nextPositionsN b n p
+  | n < 0 = []
+  | n == 0 = [b | p b]
+  | otherwise = [b'' | b' <- nextPositions b, b'' <- nextPositionsN b' (n - 1) p]
+
+pythagoreanTriple :: Int -> [(Int, Int, Int)]
+pythagoreanTriple x
+  | x < 0 = []
+  | otherwise = do
+    c <- [1 .. x]
+    b <- [1 .. c]
+    a <- [1 .. b]
+    [1 | a ^ 2 + b ^ 2 == c ^ 2]
+    return (a, b, c)
+--  [(a, b, c) | c <- [1 .. x], b <- [1 .. c], a <- [1 .. b], a ^ 2 + b ^ 2 == c ^ 2]
