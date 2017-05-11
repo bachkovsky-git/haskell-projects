@@ -1,14 +1,20 @@
 module Monads where
-import Control.Monad
 
-data Log a = Log [String] a deriving (Show, Eq)
+import           Control.Monad
+import           Data.Char     (digitToInt, isDigit)
+
+data Log a =
+  Log [String]
+      a
+  deriving (Show, Eq)
 
 toLogger :: (a -> b) -> String -> (a -> Log b)
 toLogger f s a = Log [s] (f a)
 
 execLoggers :: a -> (a -> Log b) -> (b -> Log c) -> Log c
-execLoggers x f g = Log (m1 ++ m2) x'' where
-    Log m1 x'  = f x
+execLoggers x f g = Log (m1 ++ m2) x''
+  where
+    Log m1 x' = f x
     Log m2 x'' = g x'
 
 {-
@@ -23,16 +29,18 @@ class Monad m where                     -- m - однопараметричес�
   fail   :: String -> m a               -- прерывание цепочки вычислений
 
 -}
-
-toKleisli :: Monad m => (a -> b) -> (a -> m b)
+toKleisli
+  :: Monad m
+  => (a -> b) -> (a -> m b)
 toKleisli f x = return (f x)
---toKleisli f = \x -> return (f x)
 
+--toKleisli f = \x -> return (f x)
 returnLog :: a -> Log a
 returnLog = Log []
 
 bindLog :: Log a -> (a -> Log b) -> Log b
-bindLog (Log m1 x) f = Log (m1 ++ m2) x' where
+bindLog (Log m1 x) f = Log (m1 ++ m2) x'
+  where
     (Log m2 x') = f x
 
 instance Functor Log where
@@ -43,25 +51,26 @@ instance Applicative Log where
   (<*>) = ap
 
 instance Monad Log where
-    return = returnLog
-    (>>=) = bindLog
+  return = returnLog
+  (>>=) = bindLog
 
 execLoggersList :: a -> [a -> Log a] -> Log a
 execLoggersList = foldl (>>=) . return
 
-newtype Identity a = Identity {runIdentity :: a}
-    deriving (Show, Eq)
+newtype Identity a = Identity
+  { runIdentity :: a
+  } deriving (Show, Eq)
 
 instance Functor Identity where
-    fmap f x = x >>= return . f
+  fmap f x = x >>= return . f
 
 instance Applicative Identity where
   pure = return
   Identity f <*> Identity v = Identity (f v)
 
 instance Monad Identity where
-    return = Identity
-    Identity x >>= k = k x
+  return = Identity
+  Identity x >>= k = k x
 
 wrap'n'succ :: Integer -> Identity Integer
 wrap'n'succ x = Identity (succ x)
@@ -73,3 +82,23 @@ wrap'n'succ x = Identity (succ x)
    третий закон
    m >>= k >>= k' === m >>= (\x -> k x >>= k')
 -}
+data Token
+  = Number Int
+  | Plus
+  | Minus
+  | LeftBrace
+  | RightBrace
+  deriving (Eq, Show)
+
+asToken :: String -> Maybe Token
+asToken "" = Nothing
+asToken "+" = Just Plus
+asToken "-" = Just Minus
+asToken "(" = Just LeftBrace
+asToken ")" = Just RightBrace
+asToken s
+  | all isDigit s = Just (Number (read s))
+  | otherwise = Nothing
+
+tokenize :: String -> Maybe [Token]
+tokenize = mapM asToken . words
