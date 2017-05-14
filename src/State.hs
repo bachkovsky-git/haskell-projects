@@ -37,10 +37,12 @@ readerToState :: Reader r a -> State r a
 readerToState m = state $ \s -> (runReader m s, s)
 
 writerToState :: Monoid w => Writer w a -> State w a
-writerToState m = state $ \s -> (a, s `mappend` w) where (a, w) = runWriter m
+writerToState m = state $ \s -> (a, s `mappend` w)
+  where
+    (a, w) = runWriter m
 
 fibStep :: State (Integer, Integer) ()
-fibStep = state $ \ (x, y) -> ((), (y, x + y))
+fibStep = state $ \(x, y) -> ((), (y, x + y))
 
 execStateN :: Int -> State s a -> s -> s
 execStateN n m = execState (replicateM n m)
@@ -48,17 +50,26 @@ execStateN n m = execState (replicateM n m)
 fib :: Int -> Integer
 fib n = fst $ execStateN n fibStep (0, 1)
 
-data Tree a = Leaf a | Fork (Tree a) a (Tree a) deriving (Show)
+data Tree a
+  = Leaf a
+  | Fork (Tree a)
+         a
+         (Tree a)
+  deriving (Show)
 
 numberTree :: Tree () -> Tree Integer
-numberTree tree = evalState (indepth tree) 1 where
-  indepth (Leaf _) = do
-    x <- get
-    put (x + 1)
-    return (Leaf x)
-  indepth (Fork l _ r) = do
-    ll <- indepth l
-    x <- get
-    put (x + 1)
-    rr <- indepth r
-    return (Fork ll x rr)
+numberTree tree = evalState (indepth tree) 1
+  where
+    indepth (Leaf _) = do
+      x <- get
+      put (x + 1)
+      return (Leaf x)
+    indepth (Fork l _ r) = do
+      ll <- indepth l
+      x <- get
+      put (x + 1)
+      rr <- indepth r
+      return (Fork ll x rr)
+
+tree' :: Tree ()
+tree' = Fork (Leaf ()) () (Fork (Leaf ()) () (Leaf ()))
