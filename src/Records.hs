@@ -1,5 +1,5 @@
 module Records where
-import Data.Char(isDigit)
+import           Data.Char (isDigit)
 
 --import Data.Time.Clock
 --import Data.Time.Format
@@ -13,9 +13,9 @@ data LogLevel = Error | Warning | Info
 data LogEntry = LogEntry { timestamp :: String, logLevel :: LogLevel, message :: String }
 
 logLevelToString :: LogLevel -> String
-logLevelToString Error = "Error"
+logLevelToString Error   = "Error"
 logLevelToString Warning = "Warning"
-logLevelToString Info = "Info"
+logLevelToString Info    = "Info"
 
 logEntryToString :: LogEntry -> String
 logEntryToString entry = timestamp entry ++

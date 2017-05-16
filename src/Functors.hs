@@ -45,3 +45,15 @@ instance Functor (Map k1 k2) where
     fmap id      = id
     fmap (p . q) = (fmap p) . (fmap q)
     -}
+
+newtype Arr2 e1 e2 a = Arr2 { getArr2 :: e1 -> e2 -> a }
+
+newtype Arr3 e1 e2 e3 a = Arr3 { getArr3 :: e1 -> e2 -> e3 -> a }
+
+instance Functor (Arr2 e1 e2) where
+  fmap g (Arr2 h) = Arr2 $ (g .) . h
+  -- fmap g (Arr2 h) = Arr2 $ \e1 e2 -> g (h e1 e2)
+
+instance Functor (Arr3 e1 e2 e3) where
+  fmap g (Arr3 h) = Arr3 $ ((g .) .) . h
+  -- fmap g (Arr3 h) = Arr3 $ \e1 e2 e3 -> g (h e1 e2 e3)

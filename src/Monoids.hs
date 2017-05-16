@@ -1,8 +1,8 @@
 module Monoids where
 
 
-import Prelude hiding (lookup)
 import qualified Data.List as L
+import           Prelude   hiding (lookup)
 
 class Monoid' a where
     mempty' :: a             -- нейтральный элемент
@@ -69,10 +69,10 @@ newtype Maybe' a = Maybe' { getMaybe :: Maybe a }
     deriving (Eq,Show)
 
 instance Monoid a => Monoid (Maybe' a) where
-    mempty = Maybe' (Just mempty)
+    mempty                       = Maybe' (Just mempty)
     mappend _ n@(Maybe' Nothing) = n
     mappend n@(Maybe' Nothing) _ = n
-    Maybe' l `mappend` Maybe' r = Maybe' $ l `mappend` r
+    Maybe' l `mappend` Maybe' r  = Maybe' $ l `mappend` r
 
 
 test0 :: String
@@ -93,7 +93,7 @@ class MapLike m where
     insert :: Ord k => k -> v -> m k v -> m k v
     delete :: Ord k => k -> m k v -> m k v
     fromList :: Ord k => [(k,v)] -> m k v
-    fromList [] = empty
+    fromList []         = empty
     fromList ((k,v):xs) = insert k v (fromList xs)
 
 newtype ArrowMap k v = ArrowMap { getArrowMap :: k -> Maybe v }

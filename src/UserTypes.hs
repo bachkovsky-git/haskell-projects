@@ -1,6 +1,6 @@
 {-# LANGUAGE NoMonomorphismRestriction #-}
 module UserTypes where
-import Data.Char
+import           Data.Char
 
 data MyBool = T | F deriving (Show, Eq, Read, Enum)
 data MyType = S1 | Q1
@@ -15,9 +15,9 @@ not' F = T
 data Color = Red | Green | Blue
 
 instance Show Color where
-    show Red    = "Red"
-    show Green  = "Green"
-    show Blue   = "Blue"
+    show Red   = "Red"
+    show Green = "Green"
+    show Blue  = "Blue"
 
 data LogLevel = Error | Warning | Info -- тип сумма
 
@@ -67,14 +67,14 @@ roots a b c
 data Shape = Circle Double | Rectangle Double Double
 
 area :: Shape -> Double
-area (Circle r) = pi * r ^ 2
+area (Circle r)      = pi * r ^ 2
 area (Rectangle w h) = w * h
 
 
 data Result' = Success' | Fail' Int
 
 instance Show Result' where
-    show Success' = "Success"
+    show Success'  = "Success"
     show (Fail' n) = "Fail: " ++ show n
 
 doSomeWork' :: SomeData -> Result'
@@ -90,7 +90,7 @@ data Person = Person {firstName :: String, lastName :: String, age :: Int } deri
 
 abbrFirstName :: Person -> Person
 abbrFirstName p@Person {firstName = f:_:_} = p {firstName = f : "." }
-abbrFirstName p = p
+abbrFirstName p                            = p
 
 
 data Coord a = Coord a a
