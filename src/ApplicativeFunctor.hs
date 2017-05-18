@@ -76,11 +76,10 @@ infixl 4 >*<
 (>*<) :: [a -> b] -> [a] -> [b]
 zs >*< as = getZipList (ZipList zs <*> ZipList as)
 
-x1s = [1,2,3]
-x2s = [4,5,6]
-x3s = [7,8,9]
-x4s = [10,11,12]
+divideList :: Fractional a => [a] -> a
+divideList []     = 1
+divideList (x:xs) = (/) x (divideList xs)
 
-t1 = (\a b -> 2*a+3*b) >$< x1s >*< x2s
-t2 = (\a b c -> 2*a+3*b+5*c) >$< x1s >*< x2s >*< x3s
-t3 = (\a b c d -> 2*a+3*b+5*c-4*d) >$< x1s >*< x2s >*< x3s >*< x4s
+divideList' :: (Show a, Fractional a) => [a] -> (String,a)
+divideList' []     = (show 1.0, 1.0)
+divideList' (x:xs) = (/) <$> ("<-" ++ show x ++ "/", x) <*> divideList' xs

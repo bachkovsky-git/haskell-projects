@@ -57,3 +57,11 @@ instance Functor (Arr2 e1 e2) where
 instance Functor (Arr3 e1 e2 e3) where
   fmap g (Arr3 h) = Arr3 $ ((g .) .) . h
   -- fmap g (Arr3 h) = Arr3 $ \e1 e2 e3 -> g (h e1 e2 e3)
+
+instance Applicative (Arr2 e1 e2) where
+  pure x = Arr2 $ \_ _ -> x
+  (Arr2 f) <*> (Arr2 g) = Arr2 $ \e1 e2 -> f e1 e2 (g e1 e2)
+
+instance Applicative (Arr3 e1 e2 e3) where
+  pure x = Arr3 $ \ _ _ _ -> x
+  (Arr3 f) <*> (Arr3 g) = Arr3 $ \e1 e2 e3 -> f e1 e2 e3 (g e1 e2 e3)
