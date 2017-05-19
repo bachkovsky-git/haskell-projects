@@ -28,6 +28,7 @@ ignoreBraces :: Parsec String u a -> Parsec String u b
                                   -> Parsec String u c
 ignoreBraces lBr rBr inp = lBr *> inp <* rBr
 
+
 newtype Parser a = Parser {apply :: String -> [(a, String)]}
 parse' :: Parser a -> String -> a
 parse' p = fst . head . apply p
