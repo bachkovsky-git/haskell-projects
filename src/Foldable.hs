@@ -1,5 +1,7 @@
 module Foldable where
 
+import           Data.Monoid
+
 data Triple a = Tr a a a  deriving (Eq,Show)
 
 instance Foldable Triple where
@@ -43,9 +45,12 @@ instance Foldable Levelorder where
       tbf [Nil] = []
       tbf xs    = map val xs ++ tbf (concatMap level xs)
       val (Branch _ a _) = a
-      val Nil = undefined
+      val Nil            = undefined
       level Nil                = []
       level (Branch Nil _ Nil) = []
       level (Branch Nil _ b)   = [b]
       level (Branch a _ Nil)   = [a]
       level (Branch a _ b)     = [a,b]
+
+mkEndo :: Foldable t => t (a -> a) -> Endo a
+mkEndo t = Endo $ foldr (.) id t

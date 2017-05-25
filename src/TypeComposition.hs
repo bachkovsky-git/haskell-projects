@@ -5,6 +5,10 @@ infixr 9 |.|
 newtype (|.|) f g a = Cmps {getCmps :: f (g a)}
   deriving (Eq, Show)
 
+instance (Foldable f, Foldable g) => Foldable (f |.| g) where
+  foldr f ini (Cmps cmp) = foldr (flip (foldr f)) ini cmp
+  foldMap f (Cmps x) = (foldMap . foldMap $ f) x
+
 type A   = ((,) Integer |.| (,) Char) Bool
 
 type B t = ((,,) Bool (t -> t) |.| Either String) Int
@@ -26,7 +30,7 @@ instance (Functor f, Functor g) => Functor (f |.| g) where
 
 newtype Cmps3 f g h a = Cmps3 { getCmps3 :: f (g (h a)) }
   deriving (Eq,Show)
- 
+
 instance (Functor f, Functor g, Functor h) => Functor (Cmps3 f g h) where
   f `fmap` (Cmps3 x) = Cmps3 $ (fmap . fmap) f `fmap` x
 
