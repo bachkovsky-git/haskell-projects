@@ -1,6 +1,10 @@
 module Main where
 import           Data.Char
-
+import           Data.List
+import           Data.List.Split
+import           Data.Map        (Map, fromListWith)
+import           Data.Ratio
+import           Numeric
 main :: a
 main = undefined
 
@@ -50,3 +54,31 @@ d = 0.12
 
 avg :: Int -> Int -> Int -> Double
 avg a b c = fromInteger (toInteger a + toInteger b + toInteger c) / 3.0
+
+accum :: [Char] -> [Char]
+accum s = intercalate "-"
+  [ toUpper ch : replicate i (toLower ch) | (i, ch) <- zip [0..] s]
+
+seriesSum :: Integer -> String
+seriesSum n = showFFloat (Just 2) num "" where
+  num = sum . map (1 / ) . genericTake n $ [1,4..]
+
+
+anagrams :: String -> [String] -> [String]
+anagrams w ws = [ word | word <- ws, anagram word == anagram w] where
+  anagram s = fromListWith (+) $ zip s [1,1..]
+
+
+solution :: String -> [String]
+solution s | even (length s) = chunksOf 2 s
+           | otherwise       = chunksOf 2 (s ++ "_")
+
+
+findMissing :: Integral n => [n] -> n
+findMissing xs@(f:s:t:_) = findM xs step where
+  step = signum (s - f) * minimum (map abs [s - f, t - s])
+  findM xs'@(f':s':_) n | f' + n == s' = findM (tail xs') n
+                        | otherwise    = f' + n
+
+
+x = findMissing (1:3:[7,9..])

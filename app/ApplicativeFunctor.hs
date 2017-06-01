@@ -77,9 +77,7 @@ infixl 4 >*<
 zs >*< as = getZipList (ZipList zs <*> ZipList as)
 
 divideList :: Fractional a => [a] -> a
-divideList []     = 1
-divideList (x:xs) = (/) x (divideList xs)
+divideList = foldr (/) 1
 
 divideList' :: (Show a, Fractional a) => [a] -> (String,a)
-divideList' []     = (show 1.0, 1.0)
-divideList' (x:xs) = (/) <$> ("<-" ++ show x ++ "/", x) <*> divideList' xs
+divideList' = foldr (\ x -> (<*>) ((/) <$> ("<-" ++ show x ++ "/", x))) (show 1.0, 1.0)

@@ -72,8 +72,8 @@ instance Monad Identity where
   return = Identity
   Identity x >>= k = k x
 
-wrap'n'succ :: Integer -> Identity Integer
-wrap'n'succ x = Identity (succ x)
+wrapNSucc :: Integer -> Identity Integer
+wrapNSucc x = Identity (succ x)
 
 {- первый закон
     return a >>= k === k a
