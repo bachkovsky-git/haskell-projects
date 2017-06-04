@@ -1,4 +1,4 @@
-module Foldable where
+module Foldable'(Tree) where
 
 import           Data.Monoid
 

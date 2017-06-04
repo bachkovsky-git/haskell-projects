@@ -13,7 +13,7 @@ toList _      = Nil
 data Nat = Zero | Suc Nat deriving (Show)
 
 fromNat :: Nat -> Integer
-fromNat Zero = 0
+fromNat Zero    = 0
 fromNat (Suc n) = fromNat n + 1
 
 toNat :: Integer -> Nat
@@ -32,11 +32,11 @@ fac n = toNat $ product [1..fromNat n]
 data Tree a = Leaf a | Node (Tree a) (Tree a) deriving (Show)
 
 height :: Tree a -> Int
-height (Leaf _) = 0
+height (Leaf _)          = 0
 height (Node left right) = (height left `max` height right) + 1
 
 size :: Tree a -> Int
-size (Leaf _) = 1
+size (Leaf _)          = 1
 size (Node left right) = size left + size right + 1
 
 avg :: Tree Int -> Int

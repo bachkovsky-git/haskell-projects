@@ -1,7 +1,7 @@
 module Monads where
 
 import           Control.Monad
-import           Data.Char     (digitToInt, isDigit)
+import           Data.Char     (isDigit)
 
 data Log a =
   Log [String]

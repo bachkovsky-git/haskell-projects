@@ -25,8 +25,9 @@ generate :: [Integer] -> Int -> [Integer]
 generate xs n | length xs > n = xs
               | otherwise     = xss ++ [next xss] where xss = generate xs (n - 1)
 
-sum'n'count :: Integer -> (Int, Int)
-sum'n'count x = (sum l, length l) where l = map digitToInt $ filter isDigit $ show x
+sumNCount :: Integer -> (Int, Int)
+sumNCount x = (sum l, length l) where
+  l = map digitToInt $ filter isDigit $ show x
 
 integration :: (Double -> Double) -> Double -> Double -> Double
 integration f a b = delta * (f a + f b) / 2 + sum (map (f . seg) [2 .. n - 1])
@@ -45,7 +46,7 @@ swap :: (b, a) -> (a, b)
 swap =  uncurry (flip (,))
 -- swap (1, "AS")
 
-ip :: [Char]
+ip :: String
 ip = show a ++ show b ++ show c ++ show d
 a = 12
 b = 7.22
@@ -55,7 +56,7 @@ d = 0.12
 avg :: Int -> Int -> Int -> Double
 avg a b c = fromInteger (toInteger a + toInteger b + toInteger c) / 3.0
 
-accum :: [Char] -> [Char]
+accum :: String -> String
 accum s = intercalate "-"
   [ toUpper ch : replicate i (toLower ch) | (i, ch) <- zip [0..] s]
 

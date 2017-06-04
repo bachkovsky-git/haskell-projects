@@ -37,7 +37,7 @@ instance (Functor f, Functor g, Functor h) => Functor (Cmps3 f g h) where
 instance (Applicative f, Applicative g) => Applicative (f |.| g) where
   -- pure :: a -> (f |.| g) a
   pure = Cmps . pure . pure
-  (<*>) = undefined
+  Cmps h <*> Cmps x = Cmps $ (<*>) <$> h <*> x
 
 -- GHCi> unCmps3 (pure 42 :: ([] |.| [] |.| []) Int)
 -- [[[42]]]

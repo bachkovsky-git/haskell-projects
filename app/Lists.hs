@@ -1,7 +1,7 @@
 {-# LANGUAGE NoMonomorphismRestriction #-}
 module Lists where
-import Data.Char
-import Data.List
+import           Data.Char
+import           Data.List
 
 addTwoElements :: a -> a -> [a] -> [a]
 addTwoElements x1 x2 xs = x1 : x2 : xs
@@ -24,9 +24,9 @@ oddsOnly :: Integral a => [a] -> [a]
 oddsOnly = filter odd
 
 isPalindrome :: Eq a => [a] -> Bool
-isPalindrome []  = True
-isPalindrome [_] = True
-isPalindrome (from : xs)  = (from == last xs) && isPalindrome (init xs)
+isPalindrome []          = True
+isPalindrome [_]         = True
+isPalindrome (from : xs) = (from == last xs) && isPalindrome (init xs)
 
 sum3 :: Num a => [a] -> [a] -> [a] -> [a]
 sum3 as bs cs = zipWith3 (\x y z -> x + y + z) (norm as) (norm bs) (norm cs)
@@ -52,14 +52,14 @@ qsort (x:xs) = qsort ltx ++ eqx ++ qsort gtx
     gtx = filter (>x) xs
     eqx = x : filter (==x) xs
 
-squares'n'cubes :: Num a => [a] -> [a]
-squares'n'cubes = concatMap (\x -> [x^2, x^3])
+squaresNCubes :: Num a => [a] -> [a]
+squaresNCubes = concatMap (\x -> [x^2, x^3])
 
 perms :: [a] -> [[a]]
 perms [] = [[]]
-perms xs = [x:ps | (hs, x:ts) <- (inits xs `zip` tails xs), ps <- perms (hs ++ ts)]
-    where tails xs = map (\i -> drop i xs) [0..length xs]
-          inits xs = map (\i -> take i xs) [0..length xs]
+perms xs = [x:ps | (hs, x:ts) <- inits xs `zip` tails xs, ps <- perms (hs ++ ts)]
+    where tails xs = map (`drop` xs) [0..length xs]
+          inits xs = map (`take` xs) [0..length xs]
 
 delAllUpper :: String -> String
 delAllUpper = unwords . filter (any isUpper) . words

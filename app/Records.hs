@@ -1,6 +1,6 @@
 module Records where
-import           Data.Char (isDigit)
-
+import           Data.Char  (isDigit)
+import           Data.Maybe
 --import Data.Time.Clock
 --import Data.Time.Format
 --import System.Locale
@@ -54,9 +54,7 @@ findDigit (x:xs) | isDigit x = Just x
                  | otherwise = findDigit xs
 
 findDigitOrX :: String -> Char
-findDigitOrX str = case findDigit str of
-                        Just d  -> d
-                        Nothing -> 'X'
+findDigitOrX str = fromMaybe 'X' (findDigit str)
 
 listToMaybe :: [a] -> Maybe a
 listToMaybe []    = Nothing
