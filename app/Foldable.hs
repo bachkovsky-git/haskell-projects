@@ -1,6 +1,7 @@
-module Foldable'(Tree) where
+module Foldable(Tree) where
 
 import           Data.Monoid
+import           Data.Traversable
 
 data Triple a = Tr a a a  deriving (Eq,Show)
 
@@ -51,6 +52,12 @@ instance Foldable Levelorder where
       level (Branch Nil _ b)   = [b]
       level (Branch a _ Nil)   = [a]
       level (Branch a _ b)     = [a,b]
+
+instance Functor Tree where
+  fmap = fmapDefault
+
+instance Traversable Tree where
+  sequenceA Nil = pure Nil
 
 mkEndo :: Foldable t => t (a -> a) -> Endo a
 mkEndo t = Endo $ foldr (.) id t

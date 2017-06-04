@@ -8,30 +8,30 @@ import           Data.Traversable
 
 data Tree a = Nil | Branch (Tree a) a (Tree a) deriving (Eq, Show)
 
-instance Foldable Tree where
-  foldr _ ini Nil            = ini
-  foldr f ini (Branch l x r) = f x (foldr f ( foldr f ini r) l) -- pre-order
+-- instance Foldable Tree where
+--   foldr _ ini Nil            = ini
+--   foldr f ini (Branch l x r) = f x (foldr f ( foldr f ini r) l) -- pre-order
 
-instance Functor Tree where
-  fmap _ Nil            = Nil
-  fmap f (Branch l x r) = Branch (fmap f l) (f x) (fmap f r)
+-- instance Functor Tree where
+--   fmap _ Nil            = Nil
+--   fmap f (Branch l x r) = Branch (fmap f l) (f x) (fmap f r)
 
-instance Traversable Tree where
-  traverse _ Nil            = pure Nil
-  traverse f (Branch l x r) = Branch <$> traverse f l <*> f x <*> traverse f r
+-- instance Traversable Tree where
+--   traverse _ Nil            = pure Nil
+--   traverse f (Branch l x r) = Branch <$> traverse f l <*> f x <*> traverse f r
 
-testTree :: Tree Integer
-testTree = Branch
-              (Branch
-                (Branch Nil 1 Nil)
-                2
-                (Branch Nil 3 Nil))
-              4
-              (Branch
-                (Branch Nil 6 Nil)
-                5
-              (Branch Nil 7 Nil)
-              )
+-- testTree :: Tree Integer
+-- testTree = Branch
+--               (Branch
+--                 (Branch Nil 1 Nil)
+--                 2
+--                 (Branch Nil 3 Nil))
+--               4
+--               (Branch
+--                 (Branch Nil 6 Nil)
+--                 5
+--               (Branch Nil 7 Nil)
+--               )
 
 traverse2list :: (Foldable t, Applicative f) => (a -> f b) -> t a -> f [b]
 traverse2list f = foldr (\a fb -> (:) <$> f a <*> fb) (pure [])
@@ -95,3 +95,16 @@ instance Foldable OddC where
 instance Traversable OddC where
   sequenceA (Un x)     = Un <$> x
   sequenceA (Bi x y z) = Bi <$> x <*> y <*> sequenceA z
+
+
+-- data Tree a = Nil | Branch (Tree a) a (Tree a)  deriving (Eq, Show)
+
+instance Foldable Tree where
+  foldMap = foldMapDefault
+
+instance Functor Tree where
+  fmap = fmapDefault
+
+instance Traversable Tree where
+  traverse _ Nil            = pure Nil
+  traverse f (Branch l x r) = (\ll rr xx -> Branch ll xx rr) <$> traverse f l <*> traverse f r <*> f x
