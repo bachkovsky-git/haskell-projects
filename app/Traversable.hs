@@ -1,7 +1,8 @@
 {-# LANGUAGE TypeOperators #-}
 module Traversable where
 
-import           Data.Foldable        (asum, sequenceA_, traverse_)
+import           Control.Monad
+import           Data.Foldable        (asum, sequenceA_, toList, traverse_)
 import           Data.Functor.Compose
 import           Data.Monoid
 import           Data.Traversable
@@ -84,9 +85,6 @@ xxx = Compose . fmap sequenceA . sequenceA
 
 data OddC a = Un a | Bi a a (OddC a) deriving (Eq,Show)
 
-instance Functor OddC where
-  fmap f (Un x)     = Un (f x)
-  fmap f (Bi x y z) = Bi (f x) (f y) (fmap f z)
 
 instance Foldable OddC where
   foldMap f (Un x)     = f x
@@ -95,6 +93,30 @@ instance Foldable OddC where
 instance Traversable OddC where
   sequenceA (Un x)     = Un <$> x
   sequenceA (Bi x y z) = Bi <$> x <*> y <*> sequenceA z
+
+concat3OC :: OddC a -> OddC a -> OddC a -> OddC a
+concat3OC (Un x) ys zs        = concat2OC x ys zs
+concat3OC (Bi x1 x2 xs) ys zs = concat2OC x1 (concat2OC x2 xs ys) zs
+
+concat2OC :: a -> OddC a -> OddC a -> OddC a
+concat2OC x (Un y) zs        = Bi x y zs
+concat2OC x (Bi y1 y2 ys) zs = Bi x y1 (concat2OC y2 ys zs)
+
+concatOC :: OddC (OddC a) -> OddC a
+concatOC (Un o)        = o
+concatOC (Bi o1 o2 o3) = concat3OC o1 o2 (concatOC o3)
+
+instance Functor OddC where
+  fmap = liftM
+
+instance Applicative OddC where
+  pure  = return
+  (<*>) = ap
+
+instance Monad OddC where
+  return = Un
+  (Un x) >>= f     = f x
+  (Bi x y z) >>= f = concat3OC (f x) (f y) (z >>= f)
 
 
 -- data Tree a = Nil | Branch (Tree a) a (Tree a)  deriving (Eq, Show)
@@ -107,4 +129,4 @@ instance Functor Tree where
 
 instance Traversable Tree where
   traverse _ Nil            = pure Nil
-  traverse f (Branch l x r) = (\ll rr xx -> Branch ll xx rr) <$> traverse f l <*> traverse f r <*> f x
+  traverse f (Branch l x r) = (\l' r' x' -> Branch l' x' r') <$> traverse f l <*> traverse f r <*> f x

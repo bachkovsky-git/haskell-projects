@@ -1,6 +1,7 @@
 module Parser where
 
 import           Control.Applicative ((*>), (<*))
+import           Control.Monad
 import           Data.Char
 import           Text.Parsec         hiding ((<|>))
 
@@ -115,16 +116,17 @@ instance Applicative PrsE where
 -}
 
 instance Functor PrsE where
-  f `fmap` p = PrsE $ \s -> do
-    (v, s') <- runPrsE p s
-    return (f v, s')
+  fmap = liftM
 
 instance Applicative PrsE where
-  pure v    = PrsE $ \s -> Right (v, s)
-  pf <*> pv = PrsE $ \s -> do
-    (f', s') <- runPrsE pf s
-    (v, s'') <- runPrsE pv s'
-    return (f' v, s'')
+  pure  = return
+  (<*>) = ap
+
+instance Monad PrsE where
+  return v    = PrsE $ \s -> Right (v, s)
+  pa >>= f    = PrsE $ \s -> do
+    (v, s') <- runPrsE pa s
+    runPrsE (f v) s'
 
 class Applicative f => Alternative f where
   empty :: f a                 -- эквивалент mempty
