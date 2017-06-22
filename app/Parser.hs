@@ -93,6 +93,15 @@ multiplication' = (*) <$> digit' <* char' '*' <*> digit'
 
 newtype PrsE a = PrsE { runPrsE :: String -> Either String (a, String) }
 
+instance Alternative PrsE where
+  empty = PrsE f where
+    f _ = Left "empty alternative"
+  p <|> q = PrsE f where
+    f s = let ps = runPrsE p s
+      in if null ps
+         then runPrsE q s
+         else ps
+
 satisfyE :: (Char -> Bool) -> PrsE Char
 satisfyE pr = PrsE f where
   f ""                 = Left "unexpected end of input"
