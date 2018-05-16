@@ -28,6 +28,9 @@ isPalindrome []          = True
 isPalindrome [_]         = True
 isPalindrome (from : xs) = (from == last xs) && isPalindrome (init xs)
 
+isPal :: Eq a => [a] -> Bool
+isPal xs = xs == reverse xs
+
 sum3 :: Num a => [a] -> [a] -> [a] -> [a]
 sum3 as bs cs = zipWith3 (\x y z -> x + y + z) (norm as) (norm bs) (norm cs)
     where
@@ -81,6 +84,22 @@ repeatHelper = id
 
 filter' :: (t -> Bool) -> [t] -> [t]
 filter' f xs = [x | x <- xs, f x]
+
+coins = [2, 3, 7]
+
+change' :: (Ord a, Num a) => a -> [[a]]
+change' sum' = filter (not . null) $ helper []
+  where
+    helper acc
+      | sum acc == sum' = [acc]
+      | sum acc > sum' = [[]]
+      | otherwise = concatMap helper [c : acc | c <- coins]
+
+change :: (Ord a, Num a) => a -> [[a]]
+change sum
+  | sum < 0 = []
+  | sum == 0 = [[]]
+  | otherwise = [coin : accCoins | coin <- coins, accCoins <- change (sum - coin)]
 
 ----- List folding -----------
 concatList :: [[a]] -> [a]

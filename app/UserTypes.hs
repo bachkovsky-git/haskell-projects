@@ -1,4 +1,7 @@
 {-# LANGUAGE NoMonomorphismRestriction #-}
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE StandaloneDeriving #-}
+
 module UserTypes where
 import           Data.Char
 
@@ -94,3 +97,8 @@ abbrFirstName p                            = p
 
 
 data Coord a = Coord a a
+
+data MapEntry a b where
+  ME :: (Show a, Show b) => a -> b -> MapEntry a b
+
+deriving instance Show (MapEntry a b)

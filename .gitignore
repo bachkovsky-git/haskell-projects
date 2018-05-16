@@ -1,4 +1,5 @@
 .idea/
-dist/
 .stack-work/
 .vscode/
+cabal.config
+haskell-projects.iml
