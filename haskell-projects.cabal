@@ -29,6 +29,7 @@ executable haskell-projects-exe
                      , split
                      , parsec
                      , mtl
+                     , text
                      , haskell-projects
   default-language:    Haskell2010
 
